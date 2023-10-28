@@ -12,7 +12,7 @@ interface BookListProps {
 const BookList: React.FC<BookListProps> = ({ data, title }) => {
   const [view, setView] = useState<"grid" | "table" | "twoColumns">("grid");
   const [sortOrder, setSortOrder] = useState<"ascending" | "descending">("ascending");
-
+  // let sortedData=[...data];
   if (isEmpty(data)) {
     return null;
   }
@@ -20,16 +20,17 @@ const BookList: React.FC<BookListProps> = ({ data, title }) => {
   function switchViews(selectedView: string): void {
     setView(selectedView as "grid" | "table" | "twoColumns");
   }
-  function toggleSortOrder() {
-    setSortOrder(sortOrder === "ascending" ? "descending" : "ascending");
+  function toggleSortOrder(selectedOrder: string): void {
+    setSortOrder(selectedOrder as "ascending" | "descending");
   }
-  const sortedData = data.slice().sort((a, b) => {
+  const sortedData : BookInterface[] = data.slice().sort((a, b) => {
     if (sortOrder === "ascending") {
       return a.title.localeCompare(b.title);
     } else {
       return b.title.localeCompare(a.title);
     }
   });
+  console.log("sortedData", sortedData);
 
   return (
     <div className="px-4 md:px-12 mt-4 space-y-8">
@@ -50,12 +51,16 @@ const BookList: React.FC<BookListProps> = ({ data, title }) => {
           <option value="table">Table</option>
           <option value="twoColumns">Two Columns</option>
         </select>
-        <button
+
+        <select
+          id="sortSelect"
           className="bg-blue-500 text-white rounded-full px-4 py-2 ml-2 focus:outline-none focus:shadow-outline-blue"
-          onClick={toggleSortOrder}
+          value={sortOrder}
+          onChange={(e) => toggleSortOrder(e.target.value)}
         >
-          Sort {sortOrder === "ascending" ? "Ascending" : "Descending"}
-        </button>
+          <option value="grid">Ascending</option>
+          <option value="table">Descending</option>
+        </select>
         <div
           className={
             view === "table"
@@ -66,7 +71,7 @@ const BookList: React.FC<BookListProps> = ({ data, title }) => {
           }
         >
           {data.map((book) => (
-            <BookCard key={sortedData.id} data={sortedData} view={view} />
+            <BookCard key={sortedData?.id} data={sortedData} view={view} />
           ))}
         </div>
       </div>
