@@ -11,7 +11,7 @@ interface BookCardProps {
   data: BookInterface;
 }
 
-const BookCard: React.FC<BookCardProps> = ({ data }) => {
+const BookCard: React.FC<BookCardProps> = ({ data, view }) => {
   const router = useRouter();
   const { openModal } = useInfoModalStore();
 
@@ -27,6 +27,7 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
         src={data.thumbnailUrl}
         alt="Book"
         draggable={false}
+        loading="lazy"
         className="
         cursor-pointer
         object-cover
@@ -34,13 +35,14 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
         duration
         shadow-xl
         rounded-md
-        group-hover:opacity-90
-        sm:group-hover:opacity-0
+		group-hover:opacity-30
         delay-300
         w-full
         h-[30vw]
       "
       />
+      {/* 
+        sm:group-hover:opacity-0 */}
       <div
         className="
         opacity-0
@@ -60,22 +62,6 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
         group-hover:opacity-100
       "
       >
-        <img
-          onClick={redirectToWatch}
-          src={data.thumbnailUrl}
-          alt="Book"
-          draggable={false}
-          className="
-          cursor-pointer
-          object-cover
-          transition
-          duration
-          shadow-xl
-          rounded-t-md
-          w-full
-          h-[12vw]
-        "
-        />
         <div
           className="
           z-10
@@ -86,12 +72,13 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
           w-full
           transition
           shadow-md
-          rounded-b-md
+          rounded-md
           "
         >
           <div className="flex flex-row items-center gap-3">
             <div
               onClick={redirectToWatch}
+              title="Read"
               className="cursor-pointer w-6 h-6 lg:w-10 lg:h-10 bg-white rounded-full flex justify-center items-center transition hover:bg-neutral-300"
             >
               <PlayIcon className="text-black w-4 lg:w-6" />
@@ -99,17 +86,18 @@ const BookCard: React.FC<BookCardProps> = ({ data }) => {
             <FavoriteButton bookId={data.id} />
             <div
               onClick={() => openModal(data?.id)}
+              title="Preview book"
               className="cursor-pointer ml-auto group/item w-6 h-6 lg:w-10 lg:h-10 border-white border-2 rounded-full flex justify-center items-center transition hover:border-neutral-300"
             >
               <ChevronDownIcon className="text-white group-hover/item:text-neutral-300 w-4 lg:w-6" />
             </div>
           </div>
           <div className="text-green-400 font-semibold mt-4">
-            Year <span className="text-white">2023</span>
+            Year <span className="text-white">{data?.year.toString()}</span>
           </div>
           <div className="flex flex-row mt-2 gap-2 items-center">
             <p className="text-white text-[10px] lg:text-sm">
-              Pages: {data.pages}
+              Pages: {data?.pages.toString()}
             </p>
           </div>
           <div className="flex flex-row items-center gap-2 mt-2 text-[8px] text-white lg:text-sm">
