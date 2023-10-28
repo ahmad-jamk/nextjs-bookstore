@@ -11,6 +11,7 @@ interface BookListProps {
 
 const BookList: React.FC<BookListProps> = ({ data, title }) => {
   const [view, setView] = useState<"grid" | "table" | "twoColumns">("grid");
+  const [sortOrder, setSortOrder] = useState<"ascending" | "descending">("ascending");
 
   if (isEmpty(data)) {
     return null;
@@ -19,6 +20,16 @@ const BookList: React.FC<BookListProps> = ({ data, title }) => {
   function switchViews(selectedView: string): void {
     setView(selectedView as "grid" | "table" | "twoColumns");
   }
+  function toggleSortOrder() {
+    setSortOrder(sortOrder === "ascending" ? "descending" : "ascending");
+  }
+  const sortedData = data.slice().sort((a, b) => {
+    if (sortOrder === "ascending") {
+      return a.title.localeCompare(b.title);
+    } else {
+      return b.title.localeCompare(a.title);
+    }
+  });
 
   return (
     <div className="px-4 md:px-12 mt-4 space-y-8">
@@ -39,6 +50,12 @@ const BookList: React.FC<BookListProps> = ({ data, title }) => {
           <option value="table">Table</option>
           <option value="twoColumns">Two Columns</option>
         </select>
+        <button
+          className="bg-blue-500 text-white rounded-full px-4 py-2 ml-2 focus:outline-none focus:shadow-outline-blue"
+          onClick={toggleSortOrder}
+        >
+          Sort {sortOrder === "ascending" ? "Ascending" : "Descending"}
+        </button>
         <div
           className={
             view === "table"
@@ -49,7 +66,7 @@ const BookList: React.FC<BookListProps> = ({ data, title }) => {
           }
         >
           {data.map((book) => (
-            <BookCard key={book.id} data={book} view={view} />
+            <BookCard key={sortedData.id} data={sortedData} view={view} />
           ))}
         </div>
       </div>
