@@ -9,6 +9,7 @@ import useInfoModalStore from "@/hooks/useInfoModalStore";
 
 interface BookCardProps {
   data: BookInterface;
+  view: "table" | "grid" | "twoColumns"; // Add the 'view' property
 }
 
 const BookCard: React.FC<BookCardProps> = ({ data, view }) => {
