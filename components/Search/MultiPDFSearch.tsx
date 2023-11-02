@@ -1,28 +1,32 @@
 import React, { useState } from "react";
-
-interface MultiPDFSearchProps {
-  books: [];
+interface Book {
+  fileUrl: string;
 }
 
-const MultiPDFSearch: React.FC<MultiPDFSearchProps> = ({ books }) => {
+interface MultiPDFSearchProps {
+  books: Book[];
+}
+
+const MultiPDFSearch: React.FC<MultiPDFSearchProps> = ({ books, pdfUrls }) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [foundBooks, setFoundBooks] = useState<string[]>([]);
 
   const handleSearch = () => {
     // Perform your search logic here and find all matching book titles
     // For simplicity, I'm using a placeholder value based on the search term
-
+    if (!books) {
+      // Handle the case where books is undefined
+      return;
+    }
     const matchingBooks = books.filter((book) =>
-      book.title.toLowerCase().includes(searchTerm.toLowerCase()) 
-      || book.author.toLowerCase().includes(searchTerm.toLowerCase())
-      || book.description.toLowerCase().includes(searchTerm.toLowerCase())
-      || book.ISBN.toString().includes(searchTerm.trim())
-      || book.year.toString().includes(searchTerm.trim())
+      book.fileUrl.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    console.log(matchingBooks);
+    const uniqueBooks = [
+      ...new Map(matchingBooks.map((item) => [item["title"], item])).values(),
+    ];
 
-    const uniqueBooks = [...new Map(matchingBooks.map(item =>[item['title'], item])).values()];
-
-    setFoundBooks(uniqueBooks);
+    setFoundBooks(uniqueBooks.map((book) => book.title));
   };
 
   return (
@@ -52,7 +56,7 @@ const MultiPDFSearch: React.FC<MultiPDFSearchProps> = ({ books }) => {
             <p>Matching Books:</p>
             <ul>
               {foundBooks.map((book, index) => (
-                <li key={index}>{book.title}</li>
+                <li key={index}>{book}</li>
               ))}
             </ul>
           </div>
