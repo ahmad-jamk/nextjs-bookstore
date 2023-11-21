@@ -1,5 +1,6 @@
 import Layout from "@/components/Layout";
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
+import BookFormAdd from "@/components/Books/BookFormAdd";
 
 const AddBookPage: React.FC = () => {
   const [bookData, setBookData] = useState({
@@ -16,53 +17,26 @@ const AddBookPage: React.FC = () => {
     language: "",
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type } = e.target;
+
     setBookData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: type === "number" ? parseInt(value, 10) || 0 : value,
     }));
   };
 
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch("/api/books/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bookData),
-      });
-
-      if (response.ok) {
-        console.log("Book added successfully");
-        // Handle success, e.g., redirect or show a success message
-      } else {
-        console.error("Failed to add book");
-        // Handle error, e.g., show an error message
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
+    // Add your form submission logic here
+    console.log("Book data:", bookData);
   };
 
   return (
     <Layout>
       <h1>Add a Book</h1>
-      <form onSubmit={handleFormSubmit}>
-        <label>
-          Title:
-          <input
-            type="text"
-            name="title"
-            value={bookData.title}
-            onChange={handleInputChange}
-          />
-        </label>
-        <button type="submit">Add Book</button>
-      </form>
+      <BookFormAdd bookData={bookData} onInputChange={handleInputChange} />
     </Layout>
   );
 };
